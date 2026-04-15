@@ -1,67 +1,472 @@
-# 🎵 HUNCH Music Player
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUNCH - FJ BEAST & N|KØ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap');
 
-Un reproductor de música moderno y elegante con animaciones 3D, construido con HTML5, CSS3 y JavaScript puro.
+        :root {
+            --bg-dark: #050505;
+            --accent: #ff0000;
+            --bg-body-accent: rgba(255, 0, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --vinyl-gradient: repeating-radial-gradient(circle, #181818 0px, #080808 1px, #151515 2px);
+            --neon-shadow: 0 0 40px -5px var(--accent);
+        }
 
-## ✨ Características
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow-y: auto; 
+            overflow-x: hidden;
+            position: relative;
+        }
 
-- 🎶 **Reproducción de audio** con controles intuitivos
-- 🎨 **Interfaz moderna** con efectos de vidrio y neón
-- 🐦 **Animación 3D de palomas** volando sobre el logo central
-- 💫 **Visualizador de audio** con barras animadas
-- 🎹 **Controles de teclado** (barra espaciadora para play/pause)
-- 📱 **Responsive design** que se adapta a diferentes pantallas
-- 🎯 **Logo central destacado** con efectos de glow
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        var(--bg-body-accent) 0%, 
+                        transparent 60%);
+            z-index: -1;
+            transition: background 0.8s ease-in-out;
+        }
 
-## 🎼 Canciones Incluidas
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 5000;
+            box-sizing: border-box;
+        }
 
-1. **Ay Timbora** - FJ BEAST
-2. **DEMECIA** - FJ BEAST
-3. **Don't Lie** - FJ BEAST
-4. **MAMI YO QUIERO** - NIKO
-5. **DESDE ALMA** - NIKO
-6. **WANT YOU** - NIKO
+        .nav-logo { font-weight: 900; letter-spacing: 2px; font-size: 1.2rem; color: var(--text-primary); text-decoration: none; cursor: pointer;}
+        .nav-logo span { color: var(--accent); }
 
-## 🚀 Cómo Usar
+        .nav-links { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .nav-links a:hover { color: var(--accent); }
 
-1. **Descarga** todos los archivos del proyecto
-2. **Abre** `Untitled-1.html` en tu navegador web
-3. **Disfruta** de la música y las animaciones
+        /* HERO SECTION */
+        .hero { 
+            text-align: center; 
+            z-index: 10; 
+            padding-top: 150px; 
+            width: 100%;
+            max-width: 1200px;
+        }
+        .hero h1 { 
+            font-size: 5.5rem; 
+            font-weight: 900; 
+            margin: 0; 
+            letter-spacing: -3px; 
+            background: linear-gradient(to bottom, #fff, #444); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
 
-### Controles
-- ▶️ **Play/Pause**: Botón central o barra espaciadora
-- ⏭️ **Siguiente**: Botón derecho
-- ⏮️ **Anterior**: Botón izquierdo
-- 🎯 **Barra de progreso**: Haz clic para saltar a cualquier momento
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 80px 50px;
+            margin-top: 50px;
+        }
 
-## 🎨 Características Técnicas
+        .info-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: left;
+            transition: 0.4s;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
 
-- **HTML5 Audio API** para reproducción de música
-- **CSS3 Animations** para efectos visuales
-- **JavaScript ES6+** para interactividad
-- **Responsive Design** con media queries
-- **Web Audio API** para visualización (opcional)
+        .info-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+            box-shadow: var(--neon-shadow);
+        }
 
-## 📁 Estructura del Proyecto
+        .info-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: #111;
+        }
 
-```
-HUNCH-Music-Player/
-├── Untitled-1.html          # Archivo principal del reproductor
-├── .gitignore              # Archivos ignorados por Git
-├── caratula.jpeg          # Carátula del álbum
-├── *.mp3                  # Archivos de audio (no incluidos en repo)
-└── *.png                  # Logos e imágenes
-```
+        .info-card h3 { margin: 0 0 10px 0; color: var(--accent); text-transform: uppercase; font-size: 1.2rem; }
+        .info-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
 
-## 🎵 Créditos
+        .price-tag {
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            background: var(--accent); 
+            color: #fff; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-weight: 900; 
+            font-size: 0.8rem;
+        }
 
-- **Artistas**: FJ BEAST & NIKO
-- **Diseño**: Interfaz moderna con elementos 3D
-- **Desarrollo**: HTML5, CSS3, JavaScript
+        /* OVERLAYS */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 4000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(40px);
+        }
 
-## 📄 Licencia
+        .close-btn {
+            position: absolute;
+            top: 40px; right: 50px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--accent);
+            z-index: 4100;
+        }
 
-Este proyecto es de código abierto. Siéntete libre de usarlo y modificarlo.
+        /* REPRODUCTOR */
+        #capture-area {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.9), var(--neon-shadow);
+            gap: 50px;
+            max-width: 950px;
+            width: 90%;
+        }
 
----
+        .track-list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        .track-item { font-size: 0.75rem; padding: 12px 0; color: var(--text-secondary); cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); transition: 0.3s; }
+        .track-item.active { color: #fff; font-weight: 700; border-bottom: 1px solid var(--accent); text-shadow: 0 0 15px var(--accent); }
 
-**¡Disfruta de la música con estilo!** 🎶✨
+        .scene { position: relative; width: 280px; height: 280px; margin-bottom: 30px; perspective: 1000px; }
+        .cover { position: absolute; width: 100%; height: 100%; background: #111 center/cover; z-index: 5; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+        
+        .vinyl { 
+            position: absolute; 
+            top: 5%; 
+            right: -120px; 
+            width: 92%; 
+            height: 92%; 
+            border-radius: 50%; 
+            background: 
+                conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1) 10%, transparent 20%, rgba(255,255,255,0.1) 45%, transparent 50%, rgba(255,255,255,0.1) 70%, transparent 80%),
+                var(--vinyl-gradient); 
+            z-index: 1; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            animation: spin 3s linear infinite;
+            animation-play-state: paused; 
+            transition: right 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: inset 0 0 60px rgba(0,0,0,1), 0 0 20px rgba(0,0,0,0.8), 0 0 2px var(--accent);
+        }
+
+        .vinyl.spinning { animation-play-state: running; right: -145px; }
+
+        @keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+
+        .controls { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
+        .btn { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: 0.3s; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        .btn:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); color: var(--accent); background: rgba(255,255,255,0.15); }
+
+        #volume-slider { width: 60px; accent-color: var(--accent); }
+
+        .artist-container { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
+        .artist-profile { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 40px; border-radius: 30px; width: 250px; transition: 0.3s; }
+        .artist-profile img { max-width: 150px; margin-bottom: 20px; }
+        .artist-profile:hover { border-color: var(--accent); box-shadow: var(--neon-shadow); }
+        
+        .contact-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 50px; border-radius: 30px; max-width: 500px; width: 90%; }
+        .contact-link { display: block; color: #fff; text-decoration: none; font-size: 1.2rem; margin: 20px 0; padding: 15px; border: 1px solid var(--glass-border); border-radius: 15px; transition: 0.3s; }
+        .contact-link:hover { background: var(--accent); border-color: var(--accent); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a class="nav-logo" onclick="showSection('inicio')">HUNCH <span>LP</span></a>
+        <ul class="nav-links">
+            <li><a onclick="showSection('inicio')">Inicio</a></li>
+            <li><a onclick="showSection('musica')">Música</a></li>
+            <li><a onclick="showSection('artistas')">Artistas</a></li>
+            <li><a onclick="showSection('contacto')">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <div id="section-inicio" class="hero">
+        <p style="letter-spacing: 8px; color: var(--text-secondary); font-weight: 300;">ESTUDIO CREATIVO</p>
+        <h1>FJ BEAST & N|KØ</h1>
+        <button class="btn" style="width: auto; padding: 0 40px; border-radius: 30px; margin: 30px auto;" onclick="showSection('musica')">ENTRAR AL REPRODUCTOR</button>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <img src="caratula.jpeg" alt="Producción">
+                <h3>Producción Musical</h3>
+                <p>FJ BEAST y N|KØ combinan ritmos urbanos con texturas electrónicas, creando un sonido único bajo el sello HUNCH.</p>
+            </div>
+            <div class="info-card">
+                <img src="vape 2.png" alt="Diseño" style="object-fit: contain; background: #000;">
+                <h3>Identidad Visual</h3>
+                <p>No solo es música, es una experiencia visual. Diseñamos cada arte para reflejar la esencia de cada track.</p>
+            </div>
+            <div class="info-card">
+                <img src="caratula.jpeg" alt="Lanzamientos">
+                <h3>HUNCH LP</h3>
+                <p>Explora nuestro último proyecto discográfico con colaboraciones exclusivas y sonidos de vanguardia.</p>
+            </div>
+        </div>
+
+        <div id="beats-marketplace" style="padding: 50px 0 150px; text-align: center;">
+            <h2 style="font-size: 3rem; font-weight: 900; margin-bottom: 50px; letter-spacing: -1px;">
+                BEATS <span style="color: var(--accent);">DISPONIBLES</span>
+            </h2>
+            
+            <div class="info-grid" style="padding: 0 50px;">
+                <div class="info-card">
+                    <span class="price-tag">$29.99</span>
+                    <img src="caratula.jpeg" alt="Beat 1">
+                    <h3>TRAP SOUL TYPE</h3>
+                    <p>Estilo melódico inspirado en Drake. Ideal para R&B o Trap suave.</p>
+                    <button class="btn" onclick="buyBeat('TRAP SOUL TYPE', '29.99')" style="width: 100%; border-radius: 10px; margin-top: 15px; font-weight: 700; height: 50px;">COMPRAR</button>
+                </div>
+
+                <div class="info-card">
+                    <span class="price-tag">$34.99</span>
+                    <img src="tienda 2.jpg" alt="Beat 2">
+                    <h3>BACHATA URBANA</h3>
+                    <p>Fusión tropical con bajos modernos. El sonido de la calle y el sentimiento.</p>
+                    <button class="btn" onclick="buyBeat('BACHATA URBANA', '34.99')" style="width: 100%; border-radius: 10px; margin-top: 15px; font-weight: 700; height: 50px;">COMPRAR</button>
+                </div>
+
+                <div class="info-card">
+                    <span class="price-tag">$24.99</span>
+                    <img src="tienda 1.jpg" alt="Beat 3">
+                    <h3>DRILL DARK</h3>
+                    <p>Atmósfera pesada y agresiva. Diseñado para barras de alto impacto.</p>
+                    <button class="btn" onclick="buyBeat('DRILL DARK', '24.99')" style="width: 100%; border-radius: 10px; margin-top: 15px; font-weight: 700; height: 50px;">COMPRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay-musica" class="overlay">
+        <span class="close-btn" onclick="showSection('inicio')">×</span>
+        <div id="capture-area">
+            <div style="width: 280px; border-right: 1px solid var(--glass-border); padding-right: 30px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px;">
+                    <img src="LOGO NIKO 2.png" height="35" style="opacity:0.9; filter: invert(1);">
+                    <img src="vape 2.png" height="60" style="filter: drop-shadow(0 0 15px var(--accent));">
+                    <img src="FJ BEAST LOGO.png" height="35" style="opacity:0.9; filter: invert(1);">
+                </div>
+                <div style="font-size: 0.65rem; font-weight: 900; letter-spacing: 4px; color: var(--accent); margin-bottom: 15px;">PLAYLIST</div>
+                <ul class="track-list" id="track-list-ui"></ul>
+            </div>
+            <div class="main-visual">
+                <div class="scene">
+                    <div class="cover" id="album-cover"></div>
+                    <div class="vinyl" id="vinyl-disk">
+                        <div style="width: 35%; height: 35%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); background: center/cover;" id="vinyl-label"></div>
+                    </div>
+                </div>
+                <div style="width: 280px; text-align: center;">
+                    <h1 id="active-track-name" style="font-size: 1.2rem; text-transform: uppercase; margin: 0; min-height: 1.5em;">---</h1>
+                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 15px; overflow: hidden;">
+                        <div id="progress-bar" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s linear;"></div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn" id="prev-btn">◀</button>
+                        <button class="btn" id="play-btn" style="font-size: 1.2rem;">▶</button>
+                        <button class="btn" id="next-btn">▶</button>
+                        <input type="range" id="volume-slider" min="0" max="100" value="80">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay-artistas" class="overlay">
+        <span class="close-btn" onclick="showSection('inicio')">×</span>
+        <div class="artist-container">
+            <div class="artist-profile">
+                <img src="FJ BEAST LOGO.png" style="filter: invert(1);">
+                <h2 style="margin: 0;">FJ BEAST</h2>
+                <span style="color: var(--accent); font-size: 0.8rem; letter-spacing: 2px;">PRODUCER / DJ</span>
+            </div>
+            <div class="artist-profile">
+                <img src="LOGO NIKO 2.png" style="filter: invert(1);">
+                <h2 style="margin: 0;">N|KØ</h2>
+                <span style="color: var(--accent); font-size: 0.8rem; letter-spacing: 2px;">ARTIST / SINGER</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay-contacto" class="overlay">
+        <span class="close-btn" onclick="showSection('inicio')">×</span>
+        <div class="contact-card">
+            <h2 style="font-size: 2.5rem; font-weight: 900; margin-top: 0;">¿LISTO PARA <span style="color: var(--accent);">CREAR?</span></h2>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">Hablemos sobre tu próximo proyecto musical o visual.</p>
+            <a href="mailto:djdominican9@gmail.com" class="contact-link">Enviar Email</a>
+            <a href="https://www.youtube.com/@fjbeastrd" target="_blank" class="contact-link">Canal de YouTube</a>
+        </div>
+    </div>
+
+    <audio id="audio-player"></audio>
+
+    <script>
+        // --- FUNCIÓN PARA EL PAGO POR PAYPAL ---
+        function buyBeat(beatName, price) {
+            const myPayPalEmail = "djdominican9@gmail.com"; 
+            const baseUrl = "https://www.paypal.com/cgi-bin/webscr";
+            const params = new URLSearchParams({
+                cmd: "_xclick",
+                business: myPayPalEmail,
+                item_name: "Licencia de Beat: " + beatName,
+                amount: price,
+                currency_code: "USD",
+                no_shipping: "1",
+                lc: "ES"
+            });
+            window.open(`${baseUrl}?${params.toString()}`, '_blank');
+        }
+
+        const songs = [
+            { name: "Ay Timbora", color: "#ff0000", file: "Ay Timbora FJ BEAST.mp3" },
+            { name: "DEMECIA", color: "#8a2be2", file: "DEMECIA.mp3" },
+            { name: "Don't Lie", color: "#00eeff", file: "Don't Lie - FJ BEAST.mp3" },
+            { name: "MAMI YO QUIERO", color: "#ff69b4", file: "NIKO - MAMI YO QUIERO.mp3" },
+            { name: "DESDE ALMA", color: "#0044ff", file: "NIKO - DESDE ALMA.mp3" },
+            { name: "WANT YOU", color: "#ffff00", file: "NIKO WANT YOU.mp3" },
+            { name: "PROFUNDO", color: "#00ff88", file: "PROFUNDO.mp3" },
+            { name: "ECOS DE CRISTAL", color: "#ffffff", file: "Ecos de Cristal.mp3" }
+        ];
+
+        const audioPlayer = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+        let currentTrackIndex = 0;
+
+        function loadTrack(index) {
+            currentTrackIndex = index;
+            const song = songs[index];
+            document.documentElement.style.setProperty('--accent', song.color);
+            document.documentElement.style.setProperty('--bg-body-accent', song.color + "44");
+            audioPlayer.src = song.file;
+            document.getElementById('active-track-name').innerText = song.name;
+            document.getElementById('album-cover').style.backgroundImage = `url('caratula.jpeg')`;
+            document.getElementById('vinyl-label').style.backgroundImage = `url('caratula.jpeg')`;
+            document.querySelectorAll('.track-item').forEach((item, i) => item.classList.toggle('active', i === index));
+        }
+
+        function playSong(index) {
+            loadTrack(index);
+            audioPlayer.play();
+            playBtn.innerText = "II";
+            document.getElementById('vinyl-disk').classList.add('spinning');
+        }
+
+        playBtn.onclick = () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playBtn.innerText = "II";
+                document.getElementById('vinyl-disk').classList.add('spinning');
+            } else {
+                audioPlayer.pause();
+                playBtn.innerText = "▶";
+                document.getElementById('vinyl-disk').classList.remove('spinning');
+            }
+        };
+
+        const listUI = document.getElementById('track-list-ui');
+        songs.forEach((s, i) => {
+            const li = document.createElement('li');
+            li.className = 'track-item';
+            li.innerText = `${i+1}. ${s.name}`;
+            li.onclick = () => playSong(i);
+            listUI.appendChild(li);
+        });
+
+        document.getElementById('next-btn').onclick = () => playSong((currentTrackIndex + 1) % songs.length);
+        document.getElementById('prev-btn').onclick = () => playSong((currentTrackIndex - 1 + songs.length) % songs.length);
+        document.getElementById('volume-slider').oninput = (e) => audioPlayer.volume = e.target.value / 100;
+
+        audioPlayer.ontimeupdate = () => {
+            if (audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                document.getElementById('progress-bar').style.width = progress + "%";
+            }
+        };
+
+        function showSection(section) {
+            const overlays = document.querySelectorAll('.overlay');
+            const hero = document.getElementById('section-inicio');
+            overlays.forEach(o => o.style.display = 'none');
+            
+            if (section === 'inicio') {
+                hero.style.display = 'block';
+                document.body.style.overflowY = 'auto';
+            } else {
+                hero.style.display = 'none';
+                document.getElementById(`overlay-${section}`).style.display = 'flex';
+                document.body.style.overflowY = 'hidden';
+            }
+        }
+
+        document.addEventListener('mousemove', e => {
+            document.body.style.setProperty('--mouse-x', `${(e.clientX / window.innerWidth) * 100}%`);
+            document.body.style.setProperty('--mouse-y', `${(e.clientY / window.innerHeight) * 100}%`);
+        });
+
+        showSection('inicio');
+        loadTrack(0);
+    </script>
+</body>
+</html>
